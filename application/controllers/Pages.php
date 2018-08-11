@@ -22,16 +22,27 @@ class Pages extends CI_Controller {
 	public function add() {
 
 
-		/* Do the captcha */
+		/* Load libraries/helpers */
 
-		$this->load->helper('captcha');
+		$this->load->helper(array('form','captcha'));
+		$this->load->library('form_validation');
+		$this->load->model('recipes');
+
+		/* Setting validation rules */
+
+		$this->form_validation->set_rules('title', 'Title', 'required');
+		$this->form_validation->set_rules('type', 'Type', 'required');
+		$this->form_validation->set_rules('description', 'Description', 'required');
+		$this->form_validation->set_rules('photo', 'Photo', 'callback_check_image');
+		$this->form_validation->set_rules('captcha', 'Captcha', 'callback_check_captcha','Invalid captcha');
+
+		/* Creating a captcha */
+
 		$vals = array(
-        'word'          => 'Random word',
-        'img_path'      => './captcha/',
-        'img_url'       => 'http://example.com/captcha/',
-        'font_path'     => './path/to/fonts/texb.ttf',
-        'img_width'     => '150',
-        'img_height'    => 30,
+        'img_path'      => ROOT_PATH .'captchas/',
+        'img_url'       => base_url('captchas/'),
+        'img_width'     => '250',
+        'img_height'    => 50,
         'expiration'    => 7200,
         'word_length'   => 8,
         'font_size'     => 16,
@@ -48,57 +59,92 @@ class Pages extends CI_Controller {
 		);
 
 		$cap = create_captcha($vals);
-		echo $cap['image'];
 
+		$data = array(
+        'captcha_time'  => $cap['time'],
+        'ip_address'    => $this->input->ip_address(),
+        'word'          => $cap['word']
+		);
 
-		$this->load->helper('form');
+		$query = $this->db->insert_string('captcha', $data);
+		$this->db->query($query);
 
-		$this->load->view('header');
-		$this->load->view('navigation');
-		$this->load->view('add_recipe');
+		$data['cap_img'] = $cap['image'];
 
-		$this->load->view('footer');
+		if ($this->form_validation->run() == FALSE)
+		{
+			$this->load->view('header');
+			$this->load->view('navigation');
+			$this->load->view('add_recipe',$data);
+			$this->load->view('footer');
+		}
+		else
+		{
 
-	}
-
-	public function upload_recipe() {
-
-		$this->load->helper('form');
-		$this->load->model('recipes');
-
-
+		/* Uploading the image */
 		$config = array(
-			'upload_path' => 'img/recipes/',
-			'allowed_types' => 'gif|jpg|png',
-			);
+						'upload_path' => 'img/recipes/',
+						'allowed_types' => 'gif|jpg|png',
+						);
 
 		$this->load->library('upload', $config);
-
-
-
-		$this->load->view('header');
-		$this->load->view('navigation');
-
-
 		$this->upload->do_upload('photo');
 
 		if ( ! $this->upload->do_upload('photo') || ! $this->recipes->upload_new())
-                {
-                        $error = "There has been an error";
-
-                        $this->load->view('add_recipe',$error);
-                }
-                else
-                {
-
-                        echo "Your recipe has been successfully uploaded";
-				}
-
-
-
+		{
+		$data['message'] = "There has been an error, please try again";
+		$this->load->view('message',$data);
+		}
+		else
+		{
+		$this->load->view('header');
+		$this->load->view('navigation');
+		$data['message'] = "Your recipe has been successfully uploaded";
+		$this->load->view('message',$data);
 		$this->load->view('footer');
+		}
+		}
+
 
 	}
+
+	public function check_captcha() {
+
+		/* Delete old CAPTCHAS */
+		$expiration = time() - 7200; // Two hour limit
+		$this->db->where('captcha_time < ', $expiration)
+        ->delete('captcha');
+
+		// check if the relevant CAPTCHA exists:
+		$sql = 'SELECT COUNT(*) AS count FROM captcha WHERE word = ? AND ip_address = ? AND captcha_time > ?';
+		$binds = array($_POST['captcha'], $this->input->ip_address(), $expiration);
+		$query = $this->db->query($sql, $binds);
+		$row = $query->row();
+
+		if ($row->count == 0)
+		{
+			$this->form_validation->set_message('check_captcha', 'The {field} is not valid');
+			return FALSE;
+		}
+		else
+		{
+			return TRUE;
+		}
+		}
+
+	public function check_image() {
+
+		if ($_FILES['photo']['name'] === '' && $_FILES['photo']['size'] === 0)
+		{
+			$this->form_validation->set_message('check_image', 'You need to upload the photo');
+			return FALSE;
+		}
+		else
+		{
+			return TRUE;
+		}
+		}
+
 
 	public function manage() {
 
