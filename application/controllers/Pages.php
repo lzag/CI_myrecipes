@@ -24,7 +24,7 @@ class Pages extends CI_Controller {
 
 		/* Load libraries/helpers */
 
-		$this->load->helper(array('form','captcha'));
+		$this->load->helper(array('form','captcha','inflector'));
 		$this->load->library('form_validation');
 		$this->load->model('recipes');
 
@@ -82,15 +82,8 @@ class Pages extends CI_Controller {
 		{
 
 		/* Uploading the image */
-		$config = array(
-						'upload_path' => 'img/recipes/',
-						'allowed_types' => 'gif|jpg|png',
-						);
 
-		$this->load->library('upload', $config);
-		$this->upload->do_upload('photo');
-
-		if ( ! $this->upload->do_upload('photo') || ! $this->recipes->upload_new())
+		if ( ! $this->recipes->upload_new())
 		{
 		$data['message'] = "There has been an error, please try again";
 		$this->load->view('message',$data);

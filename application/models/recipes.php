@@ -11,8 +11,21 @@ class Recipes extends CI_Model {
         public function upload_new()
         {
 			$this->load->helper('inflector');
+
 			$filename = underscore($this->security->sanitize_filename($_FILES['photo']['name']));
 			$file_nr = str_pad($this->db->count_all('recipes') + 1, 5, "0", STR_PAD_LEFT);
+
+			/* Upload the photo */
+			$config = array(
+						'upload_path' => 'img/recipes/',
+						'allowed_types' => 'gif|jpg|png',
+						'file_name' => 'IMG_' . $file_nr . '_'. $filename,
+						);
+
+			$this->load->library('upload', $config);
+			$this->upload->do_upload('photo');
+
+			/* Upload the data to the db */
 			$data = array(
 			'title' => $this->input->post('title'),
 			'type' => $this->input->post('type'),
