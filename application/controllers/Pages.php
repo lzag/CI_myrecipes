@@ -11,7 +11,7 @@ class Pages extends CI_Controller {
 		$this->load->model('recipes');
 		$data['recipe'] = $this->recipes->get_random();
 
-		$data['message'] = "Hello";
+		$data['message'] = "The random recipe of the day";
 		$this->load->view('header');
 		$this->load->view('navigation');
 		$this->load->view('message',$data);
@@ -162,7 +162,7 @@ class Pages extends CI_Controller {
 
 		/* Get all the recipes from the database */
 		$this->load->model('recipes');
-		$recipes = $this->recipes->get_all();
+		$recipes = $this->recipes->get_recipes();
 
 		foreach($recipes as &$recipe) {
 			$recipe['view_link'] = anchor("pages/get_recipe/{$recipe['recipe_id']}", 'See recipe');
@@ -201,18 +201,54 @@ class Pages extends CI_Controller {
 
 	}
 
-	public function by_type() {
+	public function all() {
 
 		$this->load->helper('text');
 		$this->load->model('recipes');
-		$type = $this->uri->segment(3);
-		if(empty($type)) {
-           $data['recipes'] = $recipes = $this->recipes->get_all();
-        } else {
-		$data['recipes'] = $this->recipes->get_recipes_by_type($type);
-		}
+		$this->load->library('pagination');
+
+		$config = array();
+       	$config["base_url"] = site_url() . "/pages/all";
+       	$config["per_page"] = 3;
+       	$config["uri_segment"] = 3;
+		$config["total_rows"] = $this->recipes->get_num_rows();
+		$config['num_tag_open'] = '<div>';
+		$config['num_tag_close'] = '</div>';
+
+       	$this->pagination->initialize($config);
+		$data['links'] = $this->pagination->create_links();
+
+		$data['recipes'] = $this->recipes->get_recipes();
 		$this->load->view('header');
 		$this->load->view('navigation');
+		$this->load->view('recipe',$data);
+		$this->load->view('footer');
+		}
+
+	public function by_type() {
+
+		$this->load->helper('text','url');
+		$this->load->model('recipes');
+		$this->load->library('pagination');
+		$type = $this->uri->segment(3);
+
+		$config = array();
+       	$config["base_url"] = site_url() . "/pages/by_type/". $type;
+       	$config["per_page"] = 3;
+       	$config["uri_segment"] = 4;
+		$config["total_rows"] = $this->recipes->get_num_rows();
+		$config['num_tag_open'] = '<div>';
+		$config['num_tag_close'] = '</div>';
+
+       	$this->pagination->initialize($config);
+		$data['links'] = $this->pagination->create_links();
+
+		$data['types'] = $this->recipes->get_types();
+
+		$data['recipes'] = $this->recipes->get_recipes();
+		$this->load->view('header');
+		$this->load->view('navigation');
+		$this->load->view('types',$data);
 		$this->load->view('recipe',$data);
 		$this->load->view('footer');
 

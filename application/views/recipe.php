@@ -10,12 +10,13 @@ foreach($recipes as $recipe) : ?>
   <div class="card-body">
     <h5 class="card-title"><?=$recipe['title']; ?></h5>
     <p class="card-text"><?=word_limiter($recipe['description'],100); ?></p>
-    <a href="#" class="btn btn-primary">See recipe</a>
+    <?php echo anchor('pages/get_recipe/'.$recipe['recipe_id'],'See recipe',array(
+				'class' => 'btn btn-primary')); ?>
   </div>
 </div>
 </div>
 <?php
 endforeach;
-
+echo $links;
 ?>
 </div>

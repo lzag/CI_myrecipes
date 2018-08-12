@@ -7,7 +7,8 @@
     <div class="navbar-nav">
 
      <?=anchor('pages/index', 'Home', 'class="nav-item nav-link"')?>
-     <?=anchor('pages/by_type', 'See recipes', 'class="nav-item nav-link"')?>
+     <?=anchor('pages/all', 'See all recipes', 'class="nav-item nav-link"')?>
+     <?=anchor('pages/by_type', 'See recipes by type', 'class="nav-item nav-link"')?>
      <?=anchor('pages/add', 'Add a recipe', 'class="nav-item nav-link"')?>
      <?=anchor('pages/manage', 'Manage recipes', 'class="nav-item nav-link"')?>
 <!--
