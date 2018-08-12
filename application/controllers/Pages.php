@@ -175,7 +175,7 @@ class Pages extends CI_Controller {
 			$config = array();
 			$config['image_library'] = 'gd';
 			$config['source_image'] = '';
-			$config['create_thumb'] = FALSE;
+			$config['create_thumb'] = TRUE;
 			$config['maintain_ratio'] = TRUE;
 			$config['width']         = 75;
 			$config['height']       = 50;
@@ -186,8 +186,10 @@ class Pages extends CI_Controller {
 			$this->image_lib->resize();
 			$this->image_lib->clear();
 
-			$recipe['photo_path'] = img(base_url("img/recipes/{$recipe['photo_path']}"));
-			$recipe['description'] = character_limiter($recipe['description'],300);
+			$thumb_path = substr($recipe['photo_path'],0, -4 ). "_thumb" . substr($recipe['photo_path'],-4, 4);
+
+			$recipe['photo_path'] = img(base_url("img/recipes/{$thumb_path}"));
+			$recipe['description'] = character_limiter($recipe['description'],200);
 
 
 		}

@@ -1,5 +1,5 @@
 <div class="container">
-	<div class="col-md-12">
+	<div class="col-md-6">
 	 <div class="card" style="">
 	  <img class="card-img-top" src="<?php echo base_url('img/recipes/') . $recipe['photo_path']; ?>" alt="recipe image">
 	  <div class="card-body">

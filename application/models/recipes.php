@@ -114,8 +114,12 @@ class Recipes extends CI_Model {
 
 		public function get_random()
 		{
+
 		$query = $this->db->query("SELECT * FROM recipes");
-		return random_element($query->result_array());
+		if ($query->num_rows() > 0)
+		{
+			return random_element($query->result_array());
+		}
 		}
 
 		public function get_types()

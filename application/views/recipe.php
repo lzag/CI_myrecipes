@@ -1,4 +1,7 @@
 <div class="row">
+<?php echo $links; ?>
+</div>
+<div class="row">
 
 <?php
 
@@ -15,8 +18,8 @@ foreach($recipes as $recipe) : ?>
   </div>
 </div>
 </div>
-<?php
-endforeach;
-echo $links;
-?>
+
+<?php endforeach; ?>
+
 </div>
+
