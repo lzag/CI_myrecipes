@@ -31,4 +31,4 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 /tests/results/
 /img/
 /application/config/database.php
-/captchas
+/captchas/
