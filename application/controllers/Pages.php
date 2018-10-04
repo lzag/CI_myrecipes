@@ -169,7 +169,7 @@ class Pages extends CI_Controller {
 			$recipe['view_link'] = anchor("pages/get_recipe/{$recipe['recipe_id']}", 'See recipe');
 			$recipe['delete_link'] = anchor("pages/remove_recipe/{$recipe['recipe_id']}", 'Delete recipe');
 
-			$image_path = "C:/xampp/htdocs/CI_myrecipes/img/recipes/{$recipe['photo_path']}";
+			$image_path = "./img/recipes/{$recipe['photo_path']}";
 
 
 
