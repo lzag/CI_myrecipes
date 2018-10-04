@@ -34,11 +34,12 @@ class Pages extends CI_Controller {
 		$this->form_validation->set_rules('type', 'Type', 'required');
 		$this->form_validation->set_rules('description', 'Description', 'required');
 		$this->form_validation->set_rules('photo', 'Photo', 'callback_check_image');
-		$this->form_validation->set_rules('captcha', 'Captcha', 'callback_check_captcha','Invalid captcha');
+		//$this->form_validation->set_rules('captcha', 'Captcha', 'callback_check_captcha','Invalid captcha');
 
 		/* Creating a captcha */
 
-		$vals = array(
+/*
+        $vals = array(
         'img_path'      => ROOT_PATH .'captchas/',
         'img_url'       => base_url('captchas/'),
         'img_width'     => '250',
@@ -70,12 +71,12 @@ class Pages extends CI_Controller {
 		$this->db->query($query);
 
 		$data['cap_img'] = $cap['image'];
-
+*/
 		if ($this->form_validation->run() == FALSE)
 		{
 			$this->load->view('header');
 			$this->load->view('navigation');
-			$this->load->view('add_recipe',$data);
+			$this->load->view('add_recipe'/*,$data*/);
 			$this->load->view('footer');
 		}
 		else

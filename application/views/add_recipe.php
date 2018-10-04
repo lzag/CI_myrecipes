@@ -21,13 +21,15 @@
     <?=form_error('photo','<div class="text-danger small">','</div>')?>
     <input type="file" name="photo" class="form-control-file" id="recipe_photo">
   </div>
+<!--
   	<div class="form-group">
 		<label for="captcha">Submit the word you see below:</label>
-		<?=form_error('captcha','<div class="text-danger small">','</div>')?>
+		<?php //form_error('captcha','<div class="text-danger small">','</div>')?>
 		<br>
-		<?=$cap_img?><br>
+		<?php //$cap_img ?><br>
 		<input type="text" name="captcha" value="">
 	</div>
+-->
 		<button type="submit" class="btn btn-primary">Submit</button>
 			<?=form_close()?>
 
